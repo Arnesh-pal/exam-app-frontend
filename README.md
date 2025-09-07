@@ -1,62 +1,93 @@
-Modern Exam App - Frontend
-This is the frontend for the Modern Exam App, a full-stack quiz application built with React. It provides a clean, modern, and responsive user interface for users to register, log in, set up and take exams, and review their performance history.
+# Modern Exam App API
 
-Live Site: https://exam-app-frontend-chi.vercel.app
+This repository contains the backend service for the **Modern Exam App**, a full-stack application for taking dynamic quizzes.  
+The API is built with **Python** and **FastAPI**, handling user authentication, fetching questions from an external service, and storing detailed user exam history.
 
-Backend API Repository: exam-app-backend
+**Live API Endpoint**: [https://etest-app-api.onrender.com](https://etest-app-api.onrender.com)
 
-Features
-Modern UI: Built with the Material-UI (MUI) component library for a professional and consistent look and feel.
+---
 
-Responsive Design: The interface is fully responsive and works beautifully on desktop, tablet, and mobile devices.
+## ✨ Features
 
-Protected Routes: User-facing pages like the exam and history are protected, ensuring only authenticated users can access them.
+- **JWT Authentication**: Secure user registration and login using JSON Web Tokens.
+- **Dynamic Question Fetching**: Integrates with [QuizAPI.io](https://quizapi.io/) to serve dynamic questions based on user-selected topics, difficulty, and limits.
+- **Detailed History Tracking**: Saves every exam attempt and each answered question to a persistent database.
+- **Performance Analytics**: Provides endpoints to retrieve a user's complete exam history and aggregated performance statistics by topic.
+- **Cloud Deployment**: Fully configured for deployment on [Render](https://render.com) with a PostgreSQL database hosted on [Neon](https://neon.tech/).
 
-Global State Management: Uses React's Context API to manage user authentication state across the entire application.
+---
 
-Dynamic Exam Setup: Users can customize their exam by choosing a topic, difficulty level, and number of questions.
+## 🛠️ Tech Stack
 
-Interactive Exam Experience: Supports both single and multiple-choice questions, with a live countdown timer and smooth navigation.
+- **Framework**: FastAPI  
+- **Database**: PostgreSQL  
+- **Authentication**: Python-JOSE (JWT) & Passlib (Hashing)  
+- **Hosting**: Render  
+- **Database Hosting**: Neon  
 
-Detailed History & Analytics: A dedicated history page shows past attempts and provides a topic-wise breakdown of correct and incorrect answers.
+---
 
-Tech Stack
-Library: React.js
+## 📌 API Endpoints
 
-UI: Material-UI (MUI)
+Interactive API documentation (Swagger UI) is available at the `/docs` endpoint of the live API.  
 
-Routing: React Router
+| Method | Endpoint                | Description                          | Protected |
+|--------|--------------------------|--------------------------------------|-----------|
+| POST   | `/auth/register`         | Create a new user account            | No        |
+| POST   | `/auth/token`            | Log in a user and receive a JWT      | No        |
+| GET    | `/exams/topics`          | Get a list of available exam topics  | Yes       |
+| GET    | `/exams/start`           | Fetch questions for a new exam       | Yes       |
+| POST   | `/exams/save_result`     | Save the results of a completed exam | Yes       |
+| GET    | `/exams/history`         | Get a user's exam history and stats  | Yes       |
+| GET    | `/exams/history/{id}`    | Get details of a specific attempt    | Yes       |
 
-State Management: React Context
+---
 
-API Communication: Axios
+## 🚀 Local Setup
 
-Hosting: Vercel
+Follow these steps to run the project locally:
 
-Local Setup
-To run this project locally, follow these steps:
+### 1. Clone the repository
+```bash
+git clone https://github.com/YourUsername/exam-app-backend.git
+cd exam-app-backend
+```
 
-Clone the repository:
+### 2. Create and activate a virtual environment
+```bash
+python3 -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+```
 
-git clone [https://github.com/YourUsername/exam-app-frontend.git](https://github.com/YourUsername/exam-app-frontend.git)
-cd exam-app-frontend
+### 3. Install dependencies
+```bash
+pip install -r requirements.txt
+```
 
-Install dependencies:
+### 4. Set up the database
 
-npm install
+Make sure PostgreSQL is running, then create a database and user:
+```bash
+CREATE ROLE myuser WITH LOGIN PASSWORD 'mypassword';
+CREATE DATABASE examdb;
+GRANT ALL PRIVILEGES ON DATABASE examdb TO myuser;
+```
 
-Configure Environment Variables:
+### 5. Configure environment variables
 
-This project requires a connection to the backend API. Create a .env.local file in the root directory.
+Create a .env file in the root directory and add:
+```bash
+DATABASE_URL="postgresql://myuser:mypassword@localhost/examdb"
+QUIZ_API_KEY="your_quizapi_key_here"
+SECRET_KEY="a_very_strong_random_secret_key"
+ALGORITHM="HS256"
+ACCESS_TOKEN_EXPIRE_MINUTES=30
+```
 
-Add the following variable, pointing to your local backend server:
+### 6. Run the application
+```bash
+uvicorn app.main:app --reload
+```
 
-REACT_APP_API_URL=[http://127.0.0.1:8000](http://127.0.0.1:8000)
-
-(Note: For production, this variable should be set in your hosting provider's environment variables to point to the live backend URL.)
-
-Run the application:
-
-npm start
-
-The application will be available at http://localhost:3000.
+Now the API will be available at:
+👉 http://127.0.0.1:8000
